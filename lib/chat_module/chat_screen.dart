@@ -129,7 +129,7 @@
 //               ),
 //             ),
 //
-//             /// 🔹 INPUT FIELD
+//
 //             MessageTextField(
 //               currentId: widget.currentUserId,
 //               friendId: widget.friendId,
@@ -159,7 +159,6 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFDF0F3),
-      // 🔥 Isse keyboard ke saath text field upar chali jayegi
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: const Color(0xFFF06292),
@@ -196,7 +195,6 @@ class _ChatScreenState extends State<ChatScreen> {
               },
             ),
           ),
-          // 🔥 Bottom field ke niche SafeArea zaroori hai
           SafeArea(
             child: MessageTextField(
                 currentId: widget.currentUserId,

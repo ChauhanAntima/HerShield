@@ -16,7 +16,7 @@ class PoliceEmergency extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: InkWell(
-          onTap: () => _callNumber('112'), // ✅ CHANGE HERE
+          onTap: () => _callNumber('112'),
           child: Container(
             height: 180,
             width: MediaQuery.of(context).size.width * 0.7,
@@ -57,7 +57,7 @@ class PoliceEmergency extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Call 1-1-2 for any emergency', // ✅ CHANGE HERE
+                          'Call 1-1-2 for any emergency',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize:
@@ -73,7 +73,7 @@ class PoliceEmergency extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              '112', // ✅ CHANGE HERE
+                              '112',
                               style: TextStyle(
                                 color: Colors.red[300],
                                 fontWeight: FontWeight.bold,

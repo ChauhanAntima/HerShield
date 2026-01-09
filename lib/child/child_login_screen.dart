@@ -74,12 +74,12 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Center( // Poori UI ko vertically aur horizontally center karne ke liye
+          child: Center(
             child: isLoading
                 ? progressIndicator(context)
                 : SingleChildScrollView(
               child: Column(
-                mainAxisSize: MainAxisSize.min, // Sirf utni jagah lega jitni zaroorat hai
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   // Login Heading
                   Text(
@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: kColorRed),
                   ),
 
-                  SizedBox(height: 30), // Text aur Fields ke beech ka gap yahan se kam karein
+                  SizedBox(height: 30),
 
                   // Form Section
                   Form(

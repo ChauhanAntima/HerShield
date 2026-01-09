@@ -57,7 +57,7 @@ class WomenHelpline extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Call 1-8-1 for women support', // ✅ CHANGE HERE
+                          'Call 1-8-1 for women support',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize:
@@ -73,7 +73,7 @@ class WomenHelpline extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              '181', // ✅ CHANGE HERE
+                              '181',
                               style: TextStyle(
                                 color: Colors.red[300],
                                 fontWeight: FontWeight.bold,
