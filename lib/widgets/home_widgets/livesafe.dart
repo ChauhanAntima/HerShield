@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:womensafety/widgets/home_widgets/live_safe/BusStationCard.dart';
@@ -20,11 +20,12 @@ class LiveSafe extends StatelessWidget{
   }
   @override
   Widget build(BuildContext context) {
-return Container(
-  height: 90,
+return SizedBox(
+  height: 108,
   width: MediaQuery.of(context).size.width,
   child: ListView(
-    physics: BouncingScrollPhysics(),
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    physics: const BouncingScrollPhysics(),
     scrollDirection: Axis.horizontal,
     children: [
       PoliceStationCard(onMapFunction: openMap),

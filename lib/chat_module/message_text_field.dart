@@ -132,13 +132,13 @@
 //           Expanded(
 //             child: TextField(
 //               controller: _controller,
-//               cursorColor: Colors.pink,
+//               cursorColor: Theme.of(context).colorScheme.primary,
 //               decoration: InputDecoration(
 //                 hintText: 'type your message',
 //                 filled: true,
 //                 fillColor: Colors.grey[100],
 //                 prefixIcon: IconButton(
-//                   icon: const Icon(Icons.add_box_rounded, color: Colors.pink),
+//                   icon: const Icon(Icons.add_box_rounded, color: Theme.of(context).colorScheme.primary),
 //                   onPressed: () {
 //                     showModalBottomSheet(
 //                       context: context,
@@ -150,7 +150,7 @@
 //             ),
 //           ),
 //           IconButton(
-//             icon: const Icon(Icons.send, color: Colors.pink),
+//             icon: const Icon(Icons.send, color: Theme.of(context).colorScheme.primary),
 //             onPressed: () {
 //               if (_controller.text.trim().isEmpty) return;
 //               sendMessage(_controller.text.trim(), 'text');
@@ -190,7 +190,7 @@
 //         children: [
 //           CircleAvatar(
 //             radius: 26,
-//             backgroundColor: Colors.pink,
+//             backgroundColor: Theme.of(context).colorScheme.primary,
 //             child: Icon(icon, color: Colors.white),
 //           ),
 //           const SizedBox(height: 5),
@@ -217,17 +217,58 @@ class MessageTextField extends StatefulWidget {
 class _MessageTextFieldState extends State<MessageTextField> {
   final TextEditingController _controller = TextEditingController();
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   Future<void> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.deniedForever) return;
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        _showStatus('Turn on location services to share your location.');
+        return;
+      }
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark place = placemarks.first;
-    String locationMsg = "https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}\n${place.locality}, ${place.street}";
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        _showStatus('Location permission is needed to share your location.');
+        return;
+      }
 
-    await sendMessage(locationMsg, 'link');
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).timeout(const Duration(seconds: 15));
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      final place = placemarks.isEmpty ? null : placemarks.first;
+      final address = [place?.locality, place?.street]
+          .whereType<String>()
+          .where((part) => part.trim().isNotEmpty)
+          .join(', ');
+      final locationMsg =
+          'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}'
+          '${address.isEmpty ? '' : '\n$address'}';
+
+      await sendMessage(locationMsg, 'link');
+      _showStatus('Your location was shared in the chat.');
+    } catch (error) {
+      _showStatus('Could not share location. Check your connection and try again.');
+      debugPrint('Chat location share failed: $error');
+    }
+  }
+
+  void _showStatus(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> sendMessage(String message, String type) async {
@@ -262,34 +303,27 @@ class _MessageTextFieldState extends State<MessageTextField> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFFDF0F3),
+                color: const Color(0xFFF7F4F1),
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: const Color(0xFFF06292).withOpacity(0.2)),
+                border: Border.all(color: const Color(0xFF573A63).withOpacity(0.2)),
               ),
               child: TextField(
                 controller: _controller,
-                cursorColor: const Color(0xFFF06292),
+                cursorColor: const Color(0xFF573A63),
                 decoration: InputDecoration(
                   hintText: 'Type your message...',
                   hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   prefixIcon: IconButton(
-                    icon: const Icon(Icons.add_circle, color: Color(0xFFF06292)),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => bottomSheet(),
-                      );
-                    },
+                    icon: const Icon(Icons.add_circle, color: Color(0xFF573A63)),
+                    onPressed: _openAttachmentSheet,
                   ),
                 ),
               ),
             ),
           ),
           const SizedBox(width: 10),
-          // Custom Send Button
           GestureDetector(
             onTap: () {
               if (_controller.text.trim().isEmpty) return;
@@ -298,7 +332,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
             },
             child: const CircleAvatar(
               radius: 25,
-              backgroundColor: Color(0xFFF06292),
+              backgroundColor: Color(0xFF573A63),
               child: Icon(Icons.send, color: Colors.white, size: 22),
             ),
           ),
@@ -307,36 +341,116 @@ class _MessageTextFieldState extends State<MessageTextField> {
     );
   }
 
-  Widget bottomSheet() {
-    return Container(
-      height: 200,
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-      ),
-      child: Column(
-        children: [
-          Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10))),
-          const SizedBox(height: 30),
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-              getCurrentLocation();
-            },
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: const Color(0xFFF06292),
-                  child: const Icon(Icons.location_on, color: Colors.white, size: 30),
+  void _openAttachmentSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: false,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => bottomSheet(sheetContext),
+    );
+  }
+
+  Widget bottomSheet(BuildContext sheetContext) {
+    return SafeArea(
+      top: false,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFFDFC),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 38,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD8D0DA),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(height: 10),
-                const Text("Send Location", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFF06292))),
-              ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 18),
+            const Text(
+              'Share with your circle',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF302737),
+              ),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'Choose what you want to send in this chat.',
+              style: TextStyle(fontSize: 13, color: Color(0xFF817785)),
+            ),
+            const SizedBox(height: 16),
+            Material(
+              color: const Color(0xFFE9E1EC),
+              borderRadius: BorderRadius.circular(18),
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  getCurrentLocation();
+                },
+                borderRadius: BorderRadius.circular(18),
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF573A63),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Icon(
+                          Icons.location_on_rounded,
+                          color: Colors.white,
+                          size: 25,
+                        ),
+                      ),
+                      const SizedBox(width: 13),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Send my location',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF302737),
+                              ),
+                            ),
+                            SizedBox(height: 3),
+                            Text(
+                              'Share a map link in this chat',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF746B75),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                        color: Color(0xFF573A63),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -123,7 +123,7 @@
 //                       // 🔹 LOCATION CARD
 //                       Container(
 //                         decoration: BoxDecoration(
-//                           color: const Color(0xFFFFF5F8), // card bg
+//                           color: const Color(0xFFFFFDFC), // card bg
 //                           borderRadius: BorderRadius.circular(12),
 //                         ),
 //                         padding: const EdgeInsets.all(12),
@@ -131,10 +131,10 @@
 //                           crossAxisAlignment: CrossAxisAlignment.start,
 //                           children: [
 //                             CircleAvatar(
-//                               backgroundColor: Colors.pink.shade100,
+//                               backgroundColor: const Color(0xFFE9E1EC),
 //                               child: const Icon(
 //                                 Icons.location_on,
-//                                 color: Colors.pink,
+//                                 color: Theme.of(context).colorScheme.primary,
 //                               ),
 //                             ),
 //                             const SizedBox(width: 8),
@@ -323,17 +323,17 @@
 //                     // 🔹 LOCATION CARD
 //                     Container(
 //                       decoration: BoxDecoration(
-//                         color: const Color(0xFFFFF5F8), // soft pastel card
+//                         color: const Color(0xFFFFFDFC), // soft pastel card
 //                         borderRadius: BorderRadius.circular(12),
 //                       ),
 //                       padding: const EdgeInsets.all(12),
 //                       child: Row(
 //                         children: [
 //                           CircleAvatar(
-//                             backgroundColor: Colors.pink.shade100,
+//                             backgroundColor: const Color(0xFFE9E1EC),
 //                             child: const Icon(
 //                               Icons.location_on,
-//                               color: Colors.pink,
+//                               color: Theme.of(context).colorScheme.primary,
 //                             ),
 //                           ),
 //                           const SizedBox(width: 10),
@@ -578,15 +578,15 @@
 //                   children: [
 //                     Container(
 //                       decoration: BoxDecoration(
-//                         color: const Color(0xFFFFF5F8),
+//                         color: const Color(0xFFFFFDFC),
 //                         borderRadius: BorderRadius.circular(12),
 //                       ),
 //                       padding: const EdgeInsets.all(12),
 //                       child: Row(
 //                         children: [
 //                           CircleAvatar(
-//                             backgroundColor: Colors.pink.shade100,
-//                             child: const Icon(Icons.location_on, color: Colors.pink),
+//                             backgroundColor: const Color(0xFFE9E1EC),
+//                             child: Icon(Icons.location_on, color: Theme.of(context).colorScheme.primary),
 //                           ),
 //                           const SizedBox(width: 10),
 //                           Expanded(
@@ -835,15 +835,15 @@
 //                   children: [
 //                     Container(
 //                       decoration: BoxDecoration(
-//                         color: const Color(0xFFFFF5F8),
+//                         color: const Color(0xFFFFFDFC),
 //                         borderRadius: BorderRadius.circular(12),
 //                       ),
 //                       padding: const EdgeInsets.all(12),
 //                       child: Row(
 //                         children: [
 //                           CircleAvatar(
-//                             backgroundColor: Colors.pink.shade100,
-//                             child: const Icon(Icons.location_on, color: Colors.pink),
+//                             backgroundColor: const Color(0xFFE9E1EC),
+//                             child: Icon(Icons.location_on, color: Theme.of(context).colorScheme.primary),
 //                           ),
 //                           const SizedBox(width: 10),
 //                           Expanded(
@@ -1098,15 +1098,15 @@
 //                     // Location Info Card
 //                     Container(
 //                       decoration: BoxDecoration(
-//                         color: const Color(0xFFFFF5F8),
+//                         color: const Color(0xFFFFFDFC),
 //                         borderRadius: BorderRadius.circular(12),
 //                       ),
 //                       padding: const EdgeInsets.all(12),
 //                       child: Row(
 //                         children: [
 //                           CircleAvatar(
-//                             backgroundColor: Colors.pink.shade100,
-//                             child: const Icon(Icons.location_on, color: Colors.pink),
+//                             backgroundColor: const Color(0xFFE9E1EC),
+//                             child: Icon(Icons.location_on, color: Theme.of(context).colorScheme.primary),
 //                           ),
 //                           const SizedBox(width: 10),
 //                           Expanded(
@@ -1150,7 +1150,6 @@
 // }
 
 
-import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // ✅ MethodChannel ke liye zaroori
@@ -1158,17 +1157,15 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 // 🔥 Aapke Database aur Model ke paths (Inhe check kar lein)
 import '../../db/db_services.dart';
 import '../../model/contactsm.dart';
 
 // UI Widgets
-import 'package:womensafety/widgets/home_widgets/CustomCarousel.dart';
-import '../../widgets/home_widgets/custom_appBar.dart';
 import '../../widgets/home_widgets/emergency.dart';
 import '../../widgets/home_widgets/livesafe.dart';
+import '../../widgets/home_widgets/safety_hero_card.dart';
 import '../../widgets/home_widgets/safehome/SafeHome.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -1179,7 +1176,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int qIndex = 0;
   String _currentCity = "";
   bool _locationPermissionGranted = false;
 
@@ -1194,7 +1190,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    getRandomQuote();
     _requestPermissions();
 
     // 🔥 Volume Button Listener: Hardware button detect karne ke liye
@@ -1242,81 +1237,100 @@ class _HomeScreenState extends State<HomeScreen> {
   // 🔥 Main SOS Function: Native Android code ka use karke SMS bhejna
   Future<void> _sendSOS() async {
     try {
+      var smsPermission = await Permission.sms.status;
+      if (!smsPermission.isGranted) {
+        smsPermission = await Permission.sms.request();
+      }
+      if (!smsPermission.isGranted) {
+        _showSosStatus('SMS permission is needed to send your SOS.');
+        return;
+      }
+
       // 1. Database se saare saved contacts lena
       List<TContact> contactList = await _databaseHelper.getContactList();
 
       if (contactList.isEmpty) {
-        Fluttertoast.showToast(
-          msg: "Please add trusted contacts first!",
-          backgroundColor: Colors.red,
-        );
+        _showSosStatus('Add a trusted contact before using SOS.');
         return;
       }
 
-      // 2. Current Location nikalna
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      String mapUrl = "https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}";
-      String message = "EMERGENCY! I need help. My location: $mapUrl";
+      // Try to add location, but don't let a location failure block the SOS text.
+      String message = 'EMERGENCY! I need help. Please call me now.';
+      try {
+        if (await Geolocator.isLocationServiceEnabled()) {
+          final position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+          ).timeout(const Duration(seconds: 12));
+          final mapUrl =
+              'https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
+          message = 'EMERGENCY! I need help. My location: $mapUrl';
+        }
+      } catch (error) {
+        debugPrint('SOS location unavailable; sending alert without location: $error');
+      }
 
       // 3. Loop: Saare contacts ko SMS bhejna
       int successCount = 0;
+      final failedNames = <String>[];
       for (TContact contact in contactList) {
-        // Number se spaces aur dash hatana
-        String cleanNumber = contact.number.replaceAll(RegExp(r'\s+'), "").replaceAll("-", "");
+        final cleanNumber = contact.number.replaceAll(RegExp(r'[^+0-9]'), '');
+        if (cleanNumber.isEmpty) {
+          failedNames.add(contact.name);
+          continue;
+        }
 
         try {
-          // ✅ MainActivity.kt ke 'sendDirectSms' method ko call karna
-          final String result = await platform.invokeMethod('sendDirectSms', {
+          await platform.invokeMethod<String>('sendDirectSms', {
             "phone": cleanNumber,
             "msg": message,
           });
-
-          if (result == "SMS Sent Successfully") {
-            successCount++;
-          }
-        } on PlatformException catch (e) {
-          print("Native SMS Error: ${e.message}");
+          successCount++;
+        } on PlatformException catch (error) {
+          failedNames.add(contact.name);
+          debugPrint('SMS send failed for ${contact.name}: ${error.message}');
         }
       }
 
-      // 4. Confirmation UI par dikhana
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Alert sent to $successCount contacts!"),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
+      if (successCount == contactList.length) {
+        _showSosStatus('SOS SMS sent to $successCount trusted contact(s).');
+      } else if (successCount > 0) {
+        _showSosStatus(
+          'SMS sent to $successCount contact(s); ${failedNames.length} failed. Check SIM/network.',
         );
+      } else {
+        _showSosStatus('SOS SMS could not be sent. Check SIM, signal and SMS permission.');
       }
     } catch (e) {
-      print("SOS ERROR: $e");
-      Fluttertoast.showToast(msg: "Failed to trigger SOS: $e");
+      debugPrint('SOS ERROR: $e');
+      _showSosStatus('SOS could not be sent. Please check your contacts and try again.');
     }
   }
 
-  // ================= Baki App Functions =================
-  void getRandomQuote() {
-    setState(() {
-      qIndex = Random().nextInt(6);
-    });
+  void _showSosStatus(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: const Color(0xFF493452),
+          duration: const Duration(seconds: 6),
+        ),
+      );
   }
 
+  // ================= Baki App Functions =================
   Future<void> _requestPermissions() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.location,
       Permission.sms,
-      Permission.phone, // Native SMS ke liye ye zaroori hai
     ].request();
 
     if (statuses[Permission.location] == PermissionStatus.granted) {
       _locationPermissionGranted = true;
       _getCurrentCity();
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void _getCurrentCity() async {
@@ -1338,66 +1352,159 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF7F4F1),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            children: [
-              CustomAppBar(quoteIndex: qIndex, onTap: getRandomQuote),
-              const SizedBox(height: 10),
-              Expanded(
-                child: ListView(
-                  children: [
-                    // Location Card
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF5F8),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.pink.shade100,
-                            child: const Icon(Icons.location_on, color: Colors.pink),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _locationPermissionGranted ? "Location enabled" : "Location disabled",
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(_currentCity.isEmpty ? "Updating location..." : "City: $_currentCity"),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF573A63),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    const SizedBox(height: 16),
-                    CustomCarousel(),
-                    const SizedBox(height: 20),
-                    const Text("Emergency", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    Emergency(),
-                    const SizedBox(height: 20),
-                    const Text("Live Safe", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10),
-                    LiveSafe(),
-                    const SizedBox(height: 20),
-                    SafeHome(),
-                    const SizedBox(height: 30),
-                  ],
-                ),
+                    child: const Icon(Icons.shield_rounded, color: Colors.white, size: 25),
+                  ),
+                  const SizedBox(width: 12),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'HerShield',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF302737)),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'YOUR SAFETY COMPANION',
+                        style: TextStyle(fontSize: 9, letterSpacing: 1.1, fontWeight: FontWeight.w700, color: Color(0xFF8A7F8D)),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE9E1EC),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Icon(Icons.favorite_rounded, color: Color(0xFF73547E), size: 21),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 28),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildLocationCard(context),
+                  ),
+                  const SizedBox(height: 17),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    child: SafetyHeroCard(),
+                  ),
+                  const SizedBox(height: 23),
+                  _sectionHeading('Emergency help', 'CALL IN ONE TAP'),
+                  const SizedBox(height: 12),
+                  const Emergency(),
+                  const SizedBox(height: 23),
+                  _sectionHeading('Find help nearby', 'EXPLORE PLACES'),
+                  const SizedBox(height: 12),
+                  LiveSafe(),
+                  const SizedBox(height: 17),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    child: SafeHome(),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildLocationCard(BuildContext context) {
+    final enabled = _locationPermissionGranted;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFDFC),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFECE5E9)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: enabled ? const Color(0xFFE7F1ED) : const Color(0xFFF3E9E8),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(
+              enabled ? Icons.location_on_rounded : Icons.location_off_rounded,
+              color: enabled ? const Color(0xFF367C78) : const Color(0xFF9C7773),
+            ),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  enabled ? 'Location is on' : 'Location is off',
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Color(0xFF342D37)),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  _currentCity.isEmpty ? 'Checking your location…' : _currentCity,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, color: Color(0xFF817785)),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 9,
+            height: 9,
+            decoration: BoxDecoration(
+              color: enabled ? const Color(0xFF4F9A7C) : const Color(0xFFC2B8C2),
+              shape: BoxShape.circle,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionHeading(String title, String eyebrow) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFF302737)),
+            ),
+          ),
+          Text(
+            eyebrow,
+            style: const TextStyle(fontSize: 9, letterSpacing: 0.8, fontWeight: FontWeight.w700, color: Color(0xFF938B94)),
+          ),
+        ],
       ),
     );
   }

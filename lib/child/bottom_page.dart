@@ -42,9 +42,9 @@ class _BottomPageState extends State<BottomPage> {
       child: Scaffold(
         body: pages[currentIndex],
         bottomNavigationBar: FABBottomAppBar(
-          backgroundColor: Colors.white,                 //  bar color
-          selectedColor: const Color(0xFFF06292),        //  ACTIVE ICON PINK
-          unselectedColor: Colors.grey,                  //  INACTIVE ICON
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          selectedColor: Theme.of(context).colorScheme.primary,
+          unselectedColor: Theme.of(context).colorScheme.onSurfaceVariant,
           onTabSelected: onTapped,
           items: [
             FABBottomAppBarItem(

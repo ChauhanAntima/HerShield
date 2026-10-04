@@ -221,6 +221,7 @@ import '../child/child_login_screen.dart';
 import '../components/PrimaryButton.dart';
 import '../components/SecondaryButton.dart';
 import '../components/custom_textfield.dart';
+import '../components/registration_illustration.dart';
 import '../utils/constants.dart';
 
 class RegisterParentScreen extends StatefulWidget {
@@ -300,8 +301,8 @@ class _RegisterParentScreenState extends State<RegisterParentScreen> {
             key: _formKey,
             child: Column(
               children: [
-                Image.asset('assets/parent.png', height: 120),
-                const SizedBox(height: 20),
+                const RegistrationIllustration(isGuardian: true),
+                const SizedBox(height: 18),
                 Text(
                   'Register as Guardian',
                   style: TextStyle(

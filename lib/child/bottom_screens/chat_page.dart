@@ -80,7 +80,7 @@
 //     // WidgetsBinding.instance.addObserver();
 //     return Scaffold(
 //       appBar: AppBar(
-//         backgroundColor: Colors.pink,
+//         backgroundColor: Theme.of(context).colorScheme.primary,
 //         // backgroundColor: Color.fromARGB(255, 250, 163, 192),
 //         title: Text("SELECT GUARDIAN"),
 //       ),
@@ -231,7 +231,7 @@
 //         /// STEP 2: FETCH PARENT USING guardianEmail
 //         return Scaffold(
 //           appBar: AppBar(
-//             backgroundColor: Color(0xFFF06292),
+//             backgroundColor: Color(0xFF573A63),
 //             title: const Text("SELECT GUARDIAN"),
 //           ),
 //           body: StreamBuilder<QuerySnapshot>(
@@ -313,7 +313,7 @@ class CheckUserStatusBeforeChat extends StatelessWidget {
       builder: (context, authSnap) {
         if (authSnap.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator(color: Color(0xFFF06292))),
+            body: Center(child: CircularProgressIndicator(color: Color(0xFF573A63))),
           );
         }
 
@@ -329,7 +329,7 @@ class CheckUserStatusBeforeChat extends StatelessWidget {
           builder: (context, userSnap) {
             if (userSnap.connectionState == ConnectionState.waiting) {
               return const Scaffold(
-                body: Center(child: CircularProgressIndicator(color: Color(0xFFF06292))),
+                body: Center(child: CircularProgressIndicator(color: Color(0xFF573A63))),
               );
             }
 
@@ -364,7 +364,7 @@ class ChatPage extends StatelessWidget {
       builder: (context, childSnap) {
         if (childSnap.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator(color: Color(0xFFF06292))),
+            body: Center(child: CircularProgressIndicator(color: Color(0xFF573A63))),
           );
         }
 
@@ -372,9 +372,9 @@ class ChatPage extends StatelessWidget {
         final guardianEmail = childData['guardianEmail'];
 
         return Scaffold(
-          backgroundColor: const Color(0xFFFDF0F3), // Soft pink background
+          backgroundColor: const Color(0xFFF7F4F1), // Soft pink background
           appBar: AppBar(
-            backgroundColor: const Color(0xFFF06292), // ✅ APKA COLOR
+            backgroundColor: const Color(0xFF573A63), // ✅ APKA COLOR
             title: const Text(
               "Chat With Guardian",
               style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
@@ -390,7 +390,7 @@ class ChatPage extends StatelessWidget {
                 .snapshots(),
             builder: (context, parentSnap) {
               if (parentSnap.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator(color: Color(0xFFF06292)));
+                return const Center(child: CircularProgressIndicator(color: Color(0xFF573A63)));
               }
 
               if (!parentSnap.hasData || parentSnap.data!.docs.isEmpty) {
@@ -398,7 +398,7 @@ class ChatPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.person_off, size: 80, color: Colors.pink.shade200),
+                      Icon(Icons.person_off, size: 80, color: const Color(0xFFD9C9DE)),
                       const SizedBox(height: 10),
                       const Text("No guardian linked to this child",
                           style: TextStyle(fontSize: 16, color: Colors.grey)),
@@ -420,7 +420,7 @@ class ChatPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.pink.withOpacity(0.1),
+                          color: const Color(0xFF573A63).withOpacity(0.1),
                           blurRadius: 10,
                           offset: const Offset(0, 5),
                         ),
@@ -429,7 +429,7 @@ class ChatPage extends StatelessWidget {
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       leading: CircleAvatar(
-                        backgroundColor: const Color(0xFFF06292),
+                        backgroundColor: const Color(0xFF573A63),
                         radius: 25,
                         child: Text(
                           d['name'][0].toUpperCase(),
@@ -444,10 +444,10 @@ class ChatPage extends StatelessWidget {
                       trailing: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.pink.shade50,
+                          color: const Color(0xFFF0EBF2),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.chat_bubble, color: Color(0xFFF06292)),
+                        child: const Icon(Icons.chat_bubble, color: Color(0xFF573A63)),
                       ),
                       onTap: () {
                         goTo(

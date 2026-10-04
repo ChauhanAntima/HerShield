@@ -237,6 +237,7 @@ import 'package:flutter/material.dart';
 import '../components/PrimaryButton.dart';
 import '../components/SecondaryButton.dart';
 import '../components/custom_textfield.dart';
+import '../components/registration_illustration.dart';
 import '../model/user_model.dart';
 import '../utils/constants.dart';
 import 'child_login_screen.dart';
@@ -350,8 +351,8 @@ class _RegisterChildScreenState extends State<RegisterChildScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Image.asset('assets/logo.png', height: 110),
-                const SizedBox(height: 30),
+                const RegistrationIllustration(isGuardian: false),
+                const SizedBox(height: 26),
                 CustomTextField(
                   hintText: 'Name',
                   onsave: (v) => _formData['name'] = v ?? '',

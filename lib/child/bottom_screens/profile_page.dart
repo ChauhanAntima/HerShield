@@ -85,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: isSaving == true
           ? Center(
               child: CircularProgressIndicator(
-              backgroundColor: Colors.pink,
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ))
           : SafeArea(
               child: Padding(
@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: Container(
                               child: profilePic == null
                                   ? CircleAvatar(
-                                      backgroundColor: Colors.deepPurple,
+                                      backgroundColor: Theme.of(context).colorScheme.primary,
                                       radius: 80,
                                       child: Center(
                                           child: Image.asset(
@@ -127,13 +127,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     )
                                   : profilePic!.contains('http')
                                       ? CircleAvatar(
-                                          backgroundColor: Colors.deepPurple,
+                                          backgroundColor: Theme.of(context).colorScheme.primary,
                                           radius: 80,
                                           backgroundImage:
                                               NetworkImage(profilePic!),
                                         )
                                       : CircleAvatar(
-                                          backgroundColor: Colors.deepPurple,
+                                          backgroundColor: Theme.of(context).colorScheme.primary,
                                           radius: 80,
                                           backgroundImage:
                                               FileImage(File(profilePic!))),

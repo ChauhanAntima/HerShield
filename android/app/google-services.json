@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "778551181322",
-    "project_id": "womensafety-4fe3d",
-    "storage_bucket": "womensafety-4fe3d.firebasestorage.app"
+    "project_number": "278419219767",
+    "project_id": "hershield-87b64",
+    "storage_bucket": "hershield-87b64.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:778551181322:android:627c83643deea2da349ff3",
+        "mobilesdk_app_id": "1:278419219767:android:4385b2741c48d339ce26b2",
         "android_client_info": {
           "package_name": "com.example.womensafety"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDFiSa3qetH_sv5pCjYMdMfR5QXBSbbzHM"
+          "current_key": "AIzaSyAKRP1s8kEfm2z4qlqRwKD2thAuWxO-cp4"
         }
       ],
       "services": {

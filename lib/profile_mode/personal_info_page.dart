@@ -120,7 +120,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Update Profile"),
-        backgroundColor: Colors.pink,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -141,7 +141,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 },
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundColor: Colors.pink,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   backgroundImage: profilePic == null
                       ? const AssetImage('assets/add_pic.png')
                   as ImageProvider
@@ -181,7 +181,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   onPressed: isSaving ? null : _saveProfile,

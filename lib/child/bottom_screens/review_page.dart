@@ -21,7 +21,7 @@ class _ReviewPageState extends State<ReviewPage> {
   double ratings = 1.0;
 
   /// 🌸 SAME COLOR FOR SAVE + ADD + STARS
-  static const Color kPrimaryPink = Color(0xFFF06292);
+  static const Color kPrimaryPink = Color(0xFF573A63);
 
   /// ---------------- SHOW ADD REVIEW DIALOG ----------------
   void showAlert(BuildContext context) {

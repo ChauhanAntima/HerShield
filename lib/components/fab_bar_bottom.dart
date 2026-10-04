@@ -74,7 +74,7 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
 
     return BottomAppBar(
       elevation: 8,
-      color: widget.backgroundColor ?? Colors.white, // ✅ FIXED
+      color: widget.backgroundColor ?? Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(

@@ -33,7 +33,7 @@
 //         child: Column(
 //           children: [
 //             const UserAccountsDrawerHeader(
-//               decoration: BoxDecoration(color: Colors.pink),
+//               decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
 //               accountName: Text("Parent"),
 //               accountEmail: Text(""),
 //             ),
@@ -96,7 +96,7 @@
 //                 margin: const EdgeInsets.only(bottom: 12),
 //                 child: ListTile(
 //                   leading: const CircleAvatar(
-//                     backgroundColor: Colors.pink,
+//                     backgroundColor: Theme.of(context).colorScheme.primary,
 //                     child: Icon(Icons.child_care, color: Colors.white),
 //                   ),
 //                   title: Text(child['name'] ?? 'No Name'),
@@ -140,25 +140,25 @@ class ParentHomeScreen extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFDF0F3), // Soft pinkish background
+      backgroundColor: const Color(0xFFF7F4F1), // Soft pinkish background
       appBar: AppBar(
         title: const Text(
           "Guardian Dashboard",
           style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1, color: Colors.white),
         ),
         centerTitle: true,
-        // ✅ APKA REQUESTED COLOR
-        backgroundColor: const Color(0xFFF06292),
+
+        backgroundColor: const Color(0xFF573A63),
         iconTheme: const IconThemeData(color: Colors.white), // Drawer icon color
         elevation: 0,
       ),
 
-      /// 🔥 SIDEBAR (DRAWER)
+
       drawer: Drawer(
         child: Column(
           children: [
             const UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFFF06292)), // ✅ Matching Theme
+              decoration: BoxDecoration(color: Color(0xFF573A63)),
               accountName: Text(
                 "Guardian Account",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -166,11 +166,11 @@ class ParentHomeScreen extends StatelessWidget {
               accountEmail: Text("Manage your children safety"),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                child: Icon(Icons.person, color: Color(0xFFF06292), size: 40),
+                child: Icon(Icons.person, color: Color(0xFF573A63), size: 40),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.edit, color: Color(0xFFF06292)),
+              leading: const Icon(Icons.edit, color: Color(0xFF573A63)),
               title: const Text("Edit Profile"),
               onTap: () {
                 Navigator.pop(context);
@@ -190,7 +190,7 @@ class ParentHomeScreen extends StatelessWidget {
         ),
       ),
 
-      /// 🔥 BODY → CHILD LIST
+
       body: user == null
           ? const Center(child: Text("User not logged in"))
           : StreamBuilder<QuerySnapshot>(
@@ -201,7 +201,7 @@ class ParentHomeScreen extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFF06292)));
+            return const Center(child: CircularProgressIndicator(color: Color(0xFF573A63)));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -209,7 +209,7 @@ class ParentHomeScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.child_care, size: 80, color: Colors.pink.withOpacity(0.2)),
+                  Icon(Icons.child_care, size: 80, color: const Color(0xFF573A63).withOpacity(0.2)),
                   const SizedBox(height: 10),
                   const Text(
                     "No children added yet 👶",
@@ -247,7 +247,7 @@ class ParentHomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.pink.withOpacity(0.05),
+                            color: const Color(0xFF573A63).withOpacity(0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           )
@@ -257,7 +257,7 @@ class ParentHomeScreen extends StatelessWidget {
                         contentPadding: const EdgeInsets.all(12),
                         leading: CircleAvatar(
                           radius: 25,
-                          backgroundColor: const Color(0xFFF06292),
+                          backgroundColor: const Color(0xFF573A63),
                           child: const Icon(Icons.face, color: Colors.white, size: 30),
                         ),
                         title: Text(
@@ -268,10 +268,10 @@ class ParentHomeScreen extends StatelessWidget {
                         trailing: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.pink.shade50,
+                            color: const Color(0xFFF0EBF2),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.chat_bubble, color: Color(0xFFF06292)),
+                          child: const Icon(Icons.chat_bubble, color: Color(0xFF573A63)),
                         ),
 
                         /// ✅ OPEN CHAT SCREEN

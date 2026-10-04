@@ -121,7 +121,7 @@ class _SafeHomeState extends State<SafeHome> {
             top: false,
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF5F8), // ✅ BOTTOM SHEET BG
+                color: const Color(0xFFFFFDFC), // ✅ BOTTOM SHEET BG
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(30),
                 ),
@@ -137,7 +137,7 @@ class _SafeHomeState extends State<SafeHome> {
                       height: 5,
                       width: 50,
                       decoration: BoxDecoration(
-                        color: Colors.pink.shade200,
+                        color: const Color(0xFFD9C9DE),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -214,35 +214,52 @@ class _SafeHomeState extends State<SafeHome> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => showModelSafeHome(context),
-      child: Card(
-        color: const Color(0xFFFFF5F8),
-        elevation: 6,
-        shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: SizedBox(
-          height: 180,
-          width: double.infinity,
-          child: Row(
-            children: [
-              const Expanded(
-                child: ListTile(
-                  title: Text(
-                    "Send Location",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text("Send Your Current Location to Emergency Contacts"),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  'assets/route.png',
-                  width: 120,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
+      borderRadius: BorderRadius.circular(23),
+      child: Container(
+        height: 112,
+        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 15),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFE9E1EC), Color(0xFFE6F0ED)],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
           ),
+          borderRadius: BorderRadius.circular(23),
+          border: Border.all(color: const Color(0xFFE2D9E5)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 54,
+              height: 54,
+              decoration: BoxDecoration(
+                color: const Color(0xFF573A63),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: const Icon(Icons.near_me_rounded, color: Colors.white, size: 27),
+            ),
+            const SizedBox(width: 14),
+            const Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Share my location',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFF302737)),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Send it to your trusted contacts',
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 11, height: 1.2, color: Color(0xFF746B75)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Color(0xFF573A63)),
+          ],
         ),
       ),
     );

@@ -103,7 +103,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       appBar: AppBar(title: Text("Volume SOS App"), backgroundColor: Colors.pink),
+//       appBar: AppBar(title: Text("Volume SOS App"), backgroundColor: Theme.of(context).colorScheme.primary),
 //       body: Center(
 //         child: Column(
 //           mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +114,7 @@
 //                 textAlign: TextAlign.center,
 //                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
 //             SizedBox(height: 10),
-//             Text("Current Presses: $_counter", style: TextStyle(fontSize: 24, color: Colors.pink)),
+//             Text("Current Presses: $_counter", style: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.primary)),
 //           ],
 //         ),
 //       ),
@@ -130,7 +130,7 @@ import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-// 🔥 Database aur Model ke paths check kar lein
+//  Database aur Model ke paths check kar lein
 import '../../db/db_services.dart';
 import '../../model/contactsm.dart';
 
@@ -144,7 +144,6 @@ class _VolumeSosScreenState extends State<VolumeSosScreen> {
   Timer? _timer;
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
-  // ✅ Wahi Channel jo MainActivity.kt aur HomeScreen mein use kiya hai
   static const platform = MethodChannel('com.example.womensafety/sms');
 
   @override
@@ -186,7 +185,7 @@ class _VolumeSosScreenState extends State<VolumeSosScreen> {
     }
 
     if (_counter >= 4) {
-      _sendSosLocation(); // ✅ Saare contacts ko alert bhejega
+      _sendSosLocation();
       setState(() {
         _counter = 0;
       });
@@ -228,7 +227,7 @@ class _VolumeSosScreenState extends State<VolumeSosScreen> {
             // Number se spaces aur dash hatana
             String cleanNumber = contact.number.replaceAll(RegExp(r'\s+'), "").replaceAll("-", "");
 
-            // ✅ Native Call (MainActivity.kt ko command dena)
+            // Native Call (MainActivity.kt ko command dena)
             final String result = await platform.invokeMethod('sendDirectSms', {
               "phone": cleanNumber,
               "msg": message,
@@ -260,7 +259,7 @@ class _VolumeSosScreenState extends State<VolumeSosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Volume SOS App"), backgroundColor: Colors.pink),
+      appBar: AppBar(title: Text("Volume SOS App"), backgroundColor: Theme.of(context).colorScheme.primary),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -272,7 +271,7 @@ class _VolumeSosScreenState extends State<VolumeSosScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
             Text("Current Presses: $_counter",
-                style: TextStyle(fontSize: 24, color: Colors.pink, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
           ],
         ),
       ),

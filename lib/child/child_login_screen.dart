@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:womensafety/child/register_child.dart';
+
+import 'forgot_password_screen.dart';
 import '../components/PrimaryButton.dart';
 import '../components/SecondaryButton.dart';
 import '../components/custom_textfield.dart';
@@ -20,7 +22,14 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isPasswordShown = true;
   final _formKey = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
+  final _emailController = TextEditingController();
   bool isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
 
   _onSubmit() async {
     _formKey.currentState!.save();
@@ -31,11 +40,11 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
 
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _formData['email'].toString(),
-        password: _formData['password'].toString(),
-      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _formData['email'].toString(),
+            password: _formData['password'].toString(),
+          );
 
       if (userCredential.user != null) {
         FirebaseFirestore.instance
@@ -43,16 +52,16 @@ class _LoginScreenState extends State<LoginScreen> {
             .doc(userCredential.user!.uid)
             .get()
             .then((value) {
-          if (mounted) {
-            if (value['type'] == 'parent') {
-              MySharedPrefference.saveUserType('parent');
-              goTo(context, ParentHomeScreen());
-            } else {
-              MySharedPrefference.saveUserType('child');
-              goTo(context, BottomPage());
-            }
-          }
-        });
+              if (mounted) {
+                if (value['type'] == 'parent') {
+                  MySharedPrefference.saveUserType('parent');
+                  goTo(context, ParentHomeScreen());
+                } else {
+                  MySharedPrefference.saveUserType('child');
+                  goTo(context, BottomPage());
+                }
+              }
+            });
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -78,104 +87,126 @@ class _LoginScreenState extends State<LoginScreen> {
             child: isLoading
                 ? progressIndicator(context)
                 : SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Login Heading
-                  Text(
-                    "Login",
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: kColorRed),
-                  ),
-
-                  SizedBox(height: 30),
-
-                  // Form Section
-                  Form(
-                    key: _formKey,
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        CustomTextField(
-                          hintText: 'Enter email',
-                          textInputAction: TextInputAction.next,
-                          keyboardtype: TextInputType.emailAddress,
-                          prefix: Icon(Icons.person),
-                          onsave: (email) {
-                            _formData['email'] = email ?? "";
-                          },
-                          validate: (email) {
-                            if (email!.isEmpty ||
-                                !email.contains("@")) {
-                              return 'enter correct email';
-                            }
-                            return null;
-                          },
+                        // Login Heading
+                        Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: kColorRed,
+                          ),
                         ),
-                        SizedBox(height: 15), // Inputs ke beech ka gap
-                        CustomTextField(
-                          hintText: 'Enter password',
-                          isPassword: isPasswordShown,
-                          prefix: Icon(Icons.vpn_key_rounded),
-                          validate: (password) {
-                            if (password!.isEmpty || password.length < 7) {
-                              return 'enter correct password';
-                            }
-                            return null;
-                          },
-                          onsave: (password) {
-                            _formData['password'] = password ?? "";
-                          },
-                          suffix: IconButton(
+
+                        SizedBox(height: 30),
+
+                        // Form Section
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              CustomTextField(
+                                hintText: 'Enter email',
+                                controller: _emailController,
+                                textInputAction: TextInputAction.next,
+                                keyboardtype: TextInputType.emailAddress,
+                                prefix: Icon(Icons.person),
+                                onsave: (email) {
+                                  _formData['email'] = email ?? "";
+                                },
+                                validate: (email) {
+                                  if (email!.isEmpty || !email.contains("@")) {
+                                    return 'enter correct email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 15), // Inputs ke beech ka gap
+                              CustomTextField(
+                                hintText: 'Enter password',
+                                isPassword: isPasswordShown,
+                                prefix: Icon(Icons.vpn_key_rounded),
+                                validate: (password) {
+                                  if (password!.isEmpty ||
+                                      password.length < 7) {
+                                    return 'enter correct password';
+                                  }
+                                  return null;
+                                },
+                                onsave: (password) {
+                                  _formData['password'] = password ?? "";
+                                },
+                                suffix: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isPasswordShown = !isPasswordShown;
+                                    });
+                                  },
+                                  icon: isPasswordShown
+                                      ? Icon(Icons.visibility_off)
+                                      : Icon(Icons.visibility),
+                                ),
+                              ),
+                              SizedBox(height: 25),
+                              PrimaryButton(
+                                title: 'LOGIN',
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _onSubmit();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 20),
+
+                        // Bottom Links Section
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Forgot Password?",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SecondaryButton(
+                              title: 'click here',
                               onPressed: () {
-                                setState(() {
-                                  isPasswordShown = !isPasswordShown;
-                                });
+                                final email = _emailController.text.trim();
+                                if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
+                                    .hasMatch(email)) {
+                                  dialogueBox(
+                                    context,
+                                    'Enter a valid email first.',
+                                  );
+                                  return;
+                                }
+                                goTo(
+                                  context,
+                                  ForgotPasswordScreen(initialEmail: email),
+                                );
                               },
-                              icon: isPasswordShown
-                                  ? Icon(Icons.visibility_off)
-                                  : Icon(Icons.visibility)),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 25),
-                        PrimaryButton(
-                            title: 'LOGIN',
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                _onSubmit();
-                              }
-                            }),
+                        SecondaryButton(
+                          title: 'Register as child',
+                          onPressed: () {
+                            goTo(context, RegisterChildScreen());
+                          },
+                        ),
+                        SecondaryButton(
+                          title: 'Register as Parent',
+                          onPressed: () {
+                            goTo(context, RegisterParentScreen());
+                          },
+                        ),
                       ],
                     ),
                   ),
-
-                  SizedBox(height: 20),
-
-                  // Bottom Links Section
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Forgot Password?",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SecondaryButton(
-                          title: 'click here', onPressed: () {}),
-                    ],
-                  ),
-                  SecondaryButton(
-                      title: 'Register as child',
-                      onPressed: () {
-                        goTo(context, RegisterChildScreen());
-                      }),
-                  SecondaryButton(
-                      title: 'Register as Parent',
-                      onPressed: () {
-                        goTo(context, RegisterParentScreen());
-                      }),
-                ],
-              ),
-            ),
           ),
         ),
       ),

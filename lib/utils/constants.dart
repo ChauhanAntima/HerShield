@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-const Color kColorDarkRed = Color(0xFFB83B5E);
-const Color kColorLightRed = Color(0xFFE23E57);
-const Color kColorRed = Color(0xFFCC2029);
-const Color kColorLightRed1 = Color(0xFFf67280);
-const Color kLightBackground = Color(0xFFF5F5F5);
-const Color kColorLightBlue = Color(0xFFA7CAFC);
-const Color kColorBlue = Color(0xFF011ACD);
-const Color darkGrey = Color(0xff707070);
-const Color darkGreen = Color(0xff13D900);
-const Color lightGrey = Color(0xff13D900);
+const Color kColorDarkRed = Color(0xFF573A63);
+const Color kColorLightRed = Color(0xFF367C78);
+const Color kColorRed = Color(0xFF573A63);
+const Color kColorLightRed1 = Color(0xFF8A6D91);
+const Color kLightBackground = Color(0xFFF7F4F1);
+const Color kColorLightBlue = Color(0xFFA9D2CC);
+const Color kColorBlue = Color(0xFF367C78);
+const Color darkGrey = Color(0xFF746B75);
+const Color darkGreen = Color(0xFF367C78);
+const Color lightGrey = Color(0xFF367C78);
 
 void goTo(BuildContext context, Widget nextScreen) {
   Navigator.push(
